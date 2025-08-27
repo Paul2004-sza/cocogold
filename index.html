@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoCoGold - Coconut Products</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      /* Clear full background photo */
+      background: url("photos/home.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #2E4E34;
+      position: relative;
+    }
+
+    /* Dark overlay for better readability */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(250, 247, 240, 0.7); /* cream overlay */
+      z-index: -1;
+    }
+
+    /* Header */
+    header {
+      background: rgba(107, 66, 38, 0.85); /* semi-transparent coconut brown */
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #FFD700, #FFB700, #E6A400);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 15px;
+    }
+    nav a {
+      background-color: #A7E6D7;
+      color: #2E4E34;
+      padding: 10px 18px;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      background-color: #3E7C50;
+      color: white;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 50px 20px;
+      background: rgba(255,255,255,0.6); /* semi-transparent for background visibility */
+      border-radius: 20px;
+      margin: 30px auto;
+      width: 80%;
+    }
+    .hero h1 {
+      color: #6B4226;
+      font-size: 3em;
+      font-family: 'Playfair Display', serif;
+    }
+    .hero p {
+      font-size: 1.2em;
+      color: #2E4E34;
+    }
+
+    /* Product Gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 40px;
+    }
+    .item {
+      background: rgba(255, 255, 255, 0.9); /* slight transparency to show background */
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .item:hover {
+      transform: scale(1.03);
+    }
+    .item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .price {
+      font-size: 18px;
+      color: #6B4226;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .buy-btn {
+      display: inline-block;
+      background-color: #3E7C50;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .buy-btn:hover {
+      background-color: #A7E6D7;
+      color: #2E4E34;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(107, 66, 38, 0.85);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.3);
+    }
+    .product-name {
+      font-size: 16px;
+      color: #3E7C50;
+      font-weight: bold;
+      margin: 8px 0 4px 0;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="photos/cocohome.png" alt="CoCoGold Logo">
+      <span class="brand-name">CoCoGold</span>
+    </div>
+    <nav>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      <a href="product.html">Products</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Welcome to CoCoGold</h1>
+    <p>Fresh, natural, and healthy coconut-based products for your lifestyle.</p>
+  </div>
+
+<div class="gallery">
+  <div class="item">
+    <img src="photos/Hair oil.jpg" alt="Hair Oil">
+    <p class="product-name">Hair Oil</p>
+    <p class="price">THB 250</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/coconutmilk.jpg" alt="Coconut Milk">
+    <p class="product-name">Coconut Milk</p>
+    <p class="price">THB 180</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/CoConut Water.jpg" alt="Coconut Water">
+    <p class="product-name">Coconut Water</p>
+    <p class="price">THB 120</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/soap.jpg" alt="Coconut Soap">
+    <p class="product-name">Coconut Soap</p>
+    <p class="price">THB 90</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/scrup.jpg" alt="Coconut Scrup">
+    <p class="product-name">Coconut Scrub</p>
+    <p class="price">THB 150</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/oil.jpg" alt="Coconut Oil">
+    <p class="product-name">Coconut Oil</p>
+    <p class="price">THB 200</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/cream.jpg" alt="Coconut Cream">
+    <p class="product-name">Coconut Cream</p>
+    <p class="price">THB 170</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+  <div class="item">
+    <img src="photos/sugar.jpg" alt="Coconut Sugar">
+    <p class="product-name">Coconut Sugar</p>
+    <p class="price">THB 140</p>
+    <a href="paymethod.html" class="buy-btn">Buy Now</a>
+  </div>
+</div>
+
+  <footer>
+    <p>&copy; 2025 CoCoGold Coconut Products | All Rights Reserved</p>
+  </footer>
+</body>
+</html>

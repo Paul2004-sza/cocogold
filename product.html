@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coconut Co. — Natural Coconut Products</title>
+  <style>
+    :root{
+      --cream: #FAF7F0;               /* background */
+      --coco-brown: #6B4226;          /* header/footer */
+      --aqua: #A7E6D7;                /* accents */
+      --tropic-green: #3E7C50;        /* buttons */
+      --text-dark: #2E4E34;           /* primary text */
+      --shadow: 0 10px 20px rgba(0,0,0,.08);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--cream);color:var(--text-dark);font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans, "Helvetica Neue", sans-serif;}
+
+    /* Header */
+    header{
+      position: sticky; top: 0; z-index: 50;
+      background: var(--coco-brown); color: #fff;
+      box-shadow: var(--shadow);
+    }
+    .nav{
+      max-width: 1100px; margin: 0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px;
+    }
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.5px}
+    .brand .logo{display:grid; place-items:center; width:40px;height:40px;border-radius:50%; background: linear-gradient(135deg, var(--aqua), var(--tropic-green)); box-shadow: inset 0 0 0 3px rgba(255,255,255,.35)}
+    .brand .logo span{font-size:22px}
+    .brand .name{font-size:18px}
+
+    .cart-btn{position:relative; display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; border:none; cursor:pointer; background:#fff; color:var(--coco-brown); font-weight:700}
+    .cart-btn:hover{transform: translateY(-1px)}
+    .badge{position:absolute; top:-6px; right:-6px; background: var(--tropic-green); color:#fff; min-width:22px; height:22px; padding:0 6px; border-radius:999px; display:grid; place-items:center; font-size:12px; font-weight:800; box-shadow: var(--shadow)}
+
+    /* Layout */
+    main{max-width:1100px; margin: 20px auto 80px; padding: 0 16px;}
+    .hero{display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 20px; background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid rgba(107,66,38,.15)}
+    .hero h1{margin:0; font-size: clamp(20px, 4vw, 28px); color: var(--coco-brown)}
+    .hero p{margin:6px 0 0; opacity:.9}
+
+    .grid{display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:18px; margin-top:18px}
+
+    /* Product Card */
+    .card{background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid rgba(107,66,38,.12); display:flex; flex-direction:column}
+    .card-media{position:relative; border-top-left-radius: var(--radius); border-top-right-radius: var(--radius); overflow:hidden; background: radial-gradient(120px 60px at 20% 30%, rgba(167,230,215,.6), transparent), radial-gradient(160px 80px at 80% 70%, rgba(62,124,80,.15), transparent), #fff; display:grid; place-items:center; height:160px}
+    .coconut{font-size:64px; filter: drop-shadow(0 8px 10px rgba(0,0,0,.08))}
+
+    .card-body{padding:14px 14px 12px; display:flex; flex-direction:column; gap:10px}
+    .title{font-weight:800; color: var(--text-dark); margin:2px 0}
+    .desc{margin:0; font-size:14px; opacity:.85}
+    .price{font-size:18px; font-weight:900; color: var(--coco-brown)}
+
+    .qty-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto}
+    .stepper{display:inline-flex; align-items:center; gap:6px; background: var(--cream); border-radius:999px; padding:6px}
+    .stepper button{width:32px;height:32px;border-radius:50%;border:none;cursor:pointer;background:#fff; box-shadow: var(--shadow)}
+    .stepper input{width:48px; text-align:center; border:none; background:transparent; font-weight:700; color:var(--text-dark)}
+
+    .add-btn{flex:1; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 12px; border-radius:999px; border: 2px solid var(--tropic-green); background: var(--tropic-green); color:#fff; cursor:pointer; font-weight:800}
+    .add-btn:hover{filter:saturate(1.05) brightness(1.02)}
+
+    .pill{display:inline-flex; align-items:center; gap:8px; background: var(--aqua); color: #153e35; font-weight:800; border-radius:999px; padding:6px 10px}
+
+    /* Drawer (Cart & Checkout share styles) */
+    .drawer{position:fixed; inset:0; pointer-events:none; z-index:60}
+    .drawer.open{pointer-events:auto}
+    .overlay{position:absolute; inset:0; background: rgba(0,0,0,.35); opacity:0; transition:.2s}
+    .drawer.open .overlay{opacity:1}
+    .panel{position:absolute; right:0; top:0; height:100%; width:min(420px, 100%); background:#fff; box-shadow: -10px 0 30px rgba(0,0,0,.12); transform: translateX(100%); transition: .25s; display:flex; flex-direction:column}
+    .drawer.open .panel{transform: translateX(0)}
+
+    .cart-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px; border-bottom:1px solid rgba(107,66,38,.15)}
+    .cart-title{display:flex; align-items:center; gap:10px; font-weight:900}
+    .cart-list{padding:10px 14px; overflow:auto; flex:1;}
+    .item{display:grid; grid-template-columns: 56px 1fr auto; gap:10px; align-items:center; padding:10px; border-radius:14px; border:1px solid rgba(107,66,38,.12); margin-bottom:10px}
+    .thumb{width:56px;height:56px; border-radius:12px; display:grid; place-items:center; background: var(--cream)}
+    .item h4{margin:0 0 4px; font-size:14px}
+    .item .mini{font-size:12px; opacity:.7; margin:0}
+    .item .controls{display:flex; align-items:center; gap:6px}
+    .icon-btn{width:28px;height:28px;border-radius:50%;border:none;background:var(--aqua);cursor:pointer}
+    .remove{background:#fff; border:1px solid rgba(107,66,38,.2)}
+
+    .cart-foot{padding:14px 16px; border-top:1px solid rgba(107,66,38,.15); display:grid; gap:10px}
+    .row{display:flex; align-items:center; justify-content:space-between}
+    .clear{background:#fff; border:2px solid rgba(107,66,38,.2); color:var(--coco-brown); padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:800}
+    .checkout{background: var(--tropic-green); color:#fff; border:none; padding:12px 16px; border-radius:999px; font-weight:900; cursor:pointer}
+
+    /* Simple form styles inside checkout */
+    .field{display:flex; flex-direction:column; gap:6px}
+    .input, .select, .textarea{
+      padding:10px 12px; border-radius:10px; border:1px solid rgba(107,66,38,.2); width:100%;
+      outline:none;
+    }
+    .textarea{min-height:72px; resize:vertical}
+    .muted{opacity:.8; font-size:12px}
+    .summary{background:#f7f7f7; border:1px solid rgba(107,66,38,.15); border-radius:12px; padding:10px}
+    .bank-box{background:#F2FFFA; border:1px dashed rgba(62,124,80,.5); border-radius:12px; padding:10px; display:none}
+    .card-box{display:none}
+    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+
+    /* Footer */
+    footer{background: var(--coco-brown); color:#fff; margin-top:40px}
+    .foot-inner{max-width:1100px;margin:0 auto;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+
+    /* Helpers */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
+    @media (max-width:520px){
+      .hero{flex-direction:column; align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav class="nav" aria-label="Primary">
+    <div class="brand" aria-label="Coconut Co. Home">
+      <div class="logo" aria-hidden="true"><span>🥥</span></div>
+      <div class="name">Coconut Co.</div>
+      <div class="pill" title="Plant-based • Handcrafted"><span>🌿</span><span>Natural & Fresh</span></div>
+    </div>
+    <!-- Home Button -->
+    <a href="index.html" class="cart-btn" style="background:#fff;color:var(--coco-brown);">
+      <span>🏠 Home</span>
+    </a>
+    <button id="openCart" class="cart-btn" aria-label="Open cart">
+      <span>Cart</span>
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 12.39a2 2 0 0 0 2 1.61h7.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span id="cartCount" class="badge" aria-live="polite">0</span>
+    </button>
+  </nav>
+</header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Pure coconut goodness for skin, hair & home.</h1>
+        <p>Shop cold-pressed oils, natural skincare, eco ropes, sugar & more. Sustainably sourced, small-batch, and delivered fresh.</p>
+      </div>
+    </section>
+
+    <section aria-label="Products">
+      <div id="productGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot-inner">
+      <div>© <span id="year"></span> Coconut Co. • Crafted with care</div>
+      <div>Made with 🥥 + 🌿</div>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Shopping cart">
+    <div id="overlay" class="overlay" role="button" tabindex="0" aria-label="Close cart overlay"></div>
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="cartHeading">
+      <div class="cart-head">
+        <div class="cart-title">
+          <span aria-hidden="true">🧺</span>
+          <div>
+            <div id="cartHeading" style="font-size:18px">Your Cart</div>
+            <div id="cartSub" style="font-size:12px; opacity:.8">Review items and edit quantities</div>
+          </div>
+        </div>
+        <button id="closeCart" class="icon-btn" title="Close"><span aria-hidden="true">✕</span><span class="sr-only">Close cart</span></button>
+      </div>
+      <div id="cartList" class="cart-list"></div>
+      <div class="cart-foot">
+        <div class="row"><strong>Subtotal</strong><strong id="cartTotal">—</strong></div>
+        <div class="row" style="gap:8px">
+          <button id="clearCart" class="clear">Clear cart</button>
+          <button id="checkout" class="checkout">Checkout</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Checkout Drawer -->
+  <aside id="checkoutModal" class="drawer" aria-hidden="true" aria-label="Checkout">
+    <div id="checkoutOverlay" class="overlay" role="button" tabindex="0" aria-label="Close checkout overlay"></div>
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="checkoutHeading">
+      <div class="cart-head">
+        <div class="cart-title">
+          <span aria-hidden="true">📦</span>
+          <div>
+            <div id="checkoutHeading" style="font-size:18px">Checkout</div>
+            <div style="font-size:12px; opacity:.8">Delivery & payment details</div>
+          </div>
+        </div>
+        <button id="closeCheckout" class="icon-btn" title="Close"><span aria-hidden="true">✕</span><span class="sr-only">Close checkout</span></button>
+      </div>
+
+      <form id="checkoutForm" style="display:flex; flex-direction:column; gap:12px; padding:14px; overflow:auto;">
+        <!-- Delivery -->
+        <div class="field">
+          <label for="custName"><strong>Full Name</strong></label>
+          <input class="input" type="text" id="custName" name="name" placeholder="John Doe" required />
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="custPhone"><strong>Phone</strong></label>
+            <input class="input" type="tel" id="custPhone" name="phone" inputmode="tel" placeholder="08X-XXX-XXXX" required />
+            <div class="muted">We’ll call for delivery if needed.</div>
+          </div>
+          <div class="field">
+            <label for="custEmail"><strong>Email</strong></label>
+            <input class="input" type="email" id="custEmail" name="email" placeholder="you@email.com" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="custAddress"><strong>Delivery Address</strong></label>
+          <textarea class="textarea" id="custAddress" name="address" placeholder="House No, Street, Sub-district, District, Province, Postal Code" required></textarea>
+        </div>
+
+        <!-- Payment -->
+        <div class="field">
+          <label for="paymentMethod"><strong>Payment Method</strong></label>
+          <select class="select" id="paymentMethod" required>
+            <option value="">— Select Payment —</option>
+            <option value="cod">Cash on Delivery (COD)</option>
+            <option value="bank">Bank Transfer</option>
+            <option value="card">Credit/Debit Card (Demo)</option>
+          </select>
+        </div>
+
+        <!-- Bank transfer info -->
+        <div id="bankBox" class="bank-box">
+          <strong>Bank Transfer Details</strong>
+          <div class="muted">Transfer and send slip via LINE/Email. Your order ships after confirmation.</div>
+          <ul style="margin:8px 0 0 18px; padding:0;">
+            <li><strong>Bank:</strong> Kasikorn Bank</li>
+            <li><strong>Account Name:</strong> Coconut Co.</li>
+            <li><strong>Account No.:</strong> 123-4-56789-0</li>
+          </ul>
+        </div>
+
+        <!-- Card demo fields -->
+        <div id="cardBox" class="card-box">
+          <div class="grid-2">
+            <div class="field">
+              <label for="cardNumber"><strong>Card Number</strong></label>
+              <input class="input" id="cardNumber" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" />
+            </div>
+            <div class="field">
+              <label for="cardName"><strong>Name on Card</strong></label>
+              <input class="input" id="cardName" placeholder="JOHN DOE" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="cardExp"><strong>Expiry (MM/YY)</strong></label>
+              <input class="input" id="cardExp" inputmode="numeric" maxlength="5" placeholder="08/27" />
+            </div>
+            <div class="field">
+              <label for="cardCvc"><strong>CVC</strong></label>
+              <input class="input" id="cardCvc" inputmode="numeric" maxlength="4" placeholder="123" />
+            </div>
+          </div>
+          <div class="muted">Demo only — no real charge.</div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+          <h4 style="margin:0 0 6px;">Order Summary</h4>
+          <div id="summaryItems" style="font-size:14px;opacity:.9"></div>
+          <div style="height:8px"></div>
+          <div class="row"><span>Subtotal</span><strong id="sumSubtotal">—</strong></div>
+          <div class="row"><span>Delivery</span><strong id="sumDelivery">—</strong></div>
+          <div class="row"><span>Discount</span><strong id="sumDiscount">—</strong></div>
+          <div class="row" style="border-top:1px solid rgba(107,66,38,.15); padding-top:6px;"><strong>Total</strong><strong id="sumTotal">—</strong></div>
+          <div class="muted" id="freeShipNote" style="margin-top:4px;"></div>
+        </div>
+
+        <!-- Promo -->
+        <div class="grid-2">
+          <input class="input" id="promo" placeholder="Promo code (optional)" />
+          <button type="button" id="applyPromo" class="clear">Apply</button>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex; gap:8px; margin-top:2px;">
+          <button type="button" id="cancelCheckout" class="clear" style="flex:1;">Cancel</button>
+          <button type="submit" id="confirmOrder" class="checkout" style="flex:1;">Confirm Order</button>
+        </div>
+      </form>
+    </div>
+  </aside>
+
+  <script>
+    // ======= Data =======
+    const products = [
+      { id: 'oil250', name: 'Cold-Pressed Coconut Oil 250ml', price: 159, unit: 'bottle', emoji: '🥥', desc: 'Food & skin grade, cold-pressed freshness.' },
+      { id: 'oil500', name: 'Virgin Coconut Oil 500ml', price: 279, unit: 'bottle', emoji: '🥥', desc: 'Extra-virgin purity for hair & skin.' },
+      { id: 'facecream', name: 'Coconut Hydrating Face Cream 50g', price: 199, unit: 'jar', emoji: '🧴', desc: 'Lightweight, non-greasy daily moisturizer.' },
+      { id: 'lip', name: 'Coconut Lip Balm', price: 79, unit: 'stick', emoji: '💄', desc: 'Deeply nourishing, tropical scent.' },
+      { id: 'rope', name: 'Eco Coconut Rope 10m', price: 89, unit: 'roll', emoji: '🪢', desc: 'Strong natural fiber for crafts & home.' },
+      { id: 'sugar', name: 'Coconut Sugar 500g', price: 129, unit: 'bag', emoji: '🍬', desc: 'Low GI natural sweetener.' },
+      { id: 'scrub', name: 'Coco Body Scrub 200g', price: 169, unit: 'jar', emoji: '🧼', desc: 'Polish & glow with gentle exfoliation.' },
+      { id: 'milk', name: 'Organic Coconut Milk 400ml', price: 59, unit: 'can', emoji: '🥛', desc: 'Creamy & rich for cooking.' },
+    ];
+
+    // ======= State =======
+    const CART_KEY = 'coconutCart.v1';
+    const CHECKOUT_KEY = 'coconutCheckout.v1';
+    let cart = loadCart();
+    let promoApplied = null;
+
+    function loadCart(){
+      try{ return JSON.parse(localStorage.getItem(CART_KEY)) || {}; }catch{ return {}; }
+    }
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+
+    // ======= Utils =======
+    const THB = new Intl.NumberFormat('th-TH', { style:'currency', currency:'THB' });
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
+    const fmt = (n) => THB.format(n);
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+
+    // ======= Render Products =======
+    function renderProducts(){
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      products.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-media" aria-hidden="true"><div class="coconut">${p.emoji}</div></div>
+          <div class="card-body">
+            <div class="title">${p.name}</div>
+            <p class="desc">${p.desc}</p>
+            <div class="price">${fmt(p.price)}</div>
+            <div class="qty-row">
+              <div class="stepper" role="group" aria-label="Quantity selector for ${p.name}">
+                <button class="step" data-step="-1" aria-label="Decrease quantity">−</button>
+                <input class="qty" type="number" inputmode="numeric" min="1" value="1" aria-label="Quantity"/>
+                <button class="step" data-step="1" aria-label="Increase quantity">+</button>
+              </div>
+              <button class="add-btn" data-id="${p.id}">Add to cart</button>
+            </div>
+          </div>
+        `;
+
+        // Stepper logic
+        const qtyInput = $('.qty', card);
+        $$('.step', card).forEach(btn => btn.addEventListener('click', () => {
+          const step = Number(btn.dataset.step);
+          const next = Math.max(1, Number(qtyInput.value || 1) + step);
+          qtyInput.value = next;
+        }));
+        qtyInput.addEventListener('input', () => {
+          if(qtyInput.value === '') return; // allow typing
+          qtyInput.value = Math.max(1, Math.floor(Number(qtyInput.value)) || 1);
+        });
+
+        // Add to cart
+        $('.add-btn', card).addEventListener('click', () => {
+          const qty = Math.max(1, Math.floor(Number(qtyInput.value)) || 1);
+          addToCart(p.id, qty);
+          animateCart();
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    // ======= Cart Ops (CRUD) =======
+    function addToCart(id, qty=1){
+      cart[id] = (cart[id] || 0) + qty; // C + U
+      saveCart();
+      renderCart();
+    }
+    function updateItem(id, qty){
+      if(qty <= 0){ delete cart[id]; } // D if <=0
+      else { cart[id] = qty; }
+      saveCart();
+      renderCart();
+    }
+    function removeItem(id){ delete cart[id]; saveCart(); renderCart(); }
+    function clearCart(){ cart = {}; saveCart(); renderCart(); }
+
+    function cartEntries(){
+      return Object.entries(cart).map(([id, qty]) => {
+        const p = products.find(x => x.id === id);
+        return { ...p, qty, line: p.price * qty };
+      });
+    }
+
+    function renderCart(){
+      const list = document.getElementById('cartList');
+      const items = cartEntries();
+      const empty = items.length === 0;
+      list.innerHTML = empty ? `<p style="opacity:.7;padding:10px">Your cart is empty. Let\'s add some coconut goodness! 🥥</p>` : '';
+
+      if(!empty){
+        items.forEach(it => {
+          const row = document.createElement('div');
+          row.className = 'item';
+          row.innerHTML = `
+            <div class="thumb" aria-hidden="true"><span>${it.emoji}</span></div>
+            <div>
+              <h4>${it.name}</h4>
+              <p class="mini">${fmt(it.price)} • ${it.unit}</p>
+              <div class="controls">
+                <button class="icon-btn" data-act="dec" aria-label="Decrease ${it.name}">−</button>
+                <span class="mini-qty">${it.qty}</span>
+                <button class="icon-btn" data-act="inc" aria-label="Increase ${it.name}">+</button>
+                <button class="icon-btn remove" data-act="rm" aria-label="Remove ${it.name}">🗑️</button>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-weight:900">${fmt(it.line)}</div>
+            </div>
+          `;
+
+          const qtyInput = $('.mini-qty', row);
+          row.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if(!btn) return;
+            const act = btn.dataset.act;
+            if(act === 'inc') updateItem(it.id, it.qty + 1);
+            if(act === 'dec') updateItem(it.id, it.qty - 1);
+            if(act === 'rm') removeItem(it.id);
+          });
+          qtyInput.addEventListener('change', () => {
+            const q = Math.max(1, Math.floor(Number(qtyInput.value)) || 1);
+            updateItem(it.id, q);
+          });
+
+          list.appendChild(row);
+        });
+      }
+
+      // totals + badge
+      const total = items.reduce((s, x) => s + x.line, 0);
+      document.getElementById('cartTotal').textContent = fmt(total);
+      const count = items.reduce((s, x) => s + x.qty, 0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartSub').textContent = count ? `${count} item${count>1?'s':''} • ${fmt(total)}` : 'Review items and edit quantities';
+    }
+
+    // ======= Drawers =======
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    const openBtn = document.getElementById('openCart');
+    const closeBtn = document.getElementById('closeCart');
+
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false'); }
+    function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); }
+
+    openBtn.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') { closeDrawer(); closeCheckoutModal(); } });
+
+    function animateCart(){
+      openBtn.style.transform = 'translateY(-2px) scale(1.02)';
+      setTimeout(() => openBtn.style.transform = '', 160);
+    }
+
+    // ======= Footer Year & Init =======
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Buttons
+    document.getElementById('clearCart').addEventListener('click', clearCart);
+
+    // ======= Checkout Drawer Logic =======
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkoutOverlay = document.getElementById('checkoutOverlay');
+    const closeCheckoutBtn = document.getElementById('closeCheckout');
+    const cancelCheckoutBtn = document.getElementById('cancelCheckout');
+    const checkoutForm = document.getElementById('checkoutForm');
+
+    const summaryItems = document.getElementById('summaryItems');
+    const sumSubtotal = document.getElementById('sumSubtotal');
+    const sumDelivery = document.getElementById('sumDelivery');
+    const sumDiscount = document.getElementById('sumDiscount');
+    const sumTotal = document.getElementById('sumTotal');
+    const freeShipNote = document.getElementById('freeShipNote');
+
+    const bankBox = document.getElementById('bankBox');
+    const cardBox = document.getElementById('cardBox');
+
+    const SHIP_FLAT = 50;      // THB
+    const FREE_SHIP_MIN = 500; // THB
+
+    // Persist/restore delivery details
+    function loadCheckoutData(){
+      try { return JSON.parse(localStorage.getItem(CHECKOUT_KEY)) || {}; } catch { return {}; }
+    }
+    function saveCheckoutData(data){
+      localStorage.setItem(CHECKOUT_KEY, JSON.stringify(data));
+    }
+    function fillCheckoutFromStorage(){
+      const d = loadCheckoutData();
+      if(d.name) $('#custName').value = d.name;
+      if(d.phone) $('#custPhone').value = d.phone;
+      if(d.email) $('#custEmail').value = d.email;
+      if(d.address) $('#custAddress').value = d.address;
+      if(d.payment) $('#paymentMethod').value = d.payment;
+      togglePaymentSections();
+    }
+
+    // Promo handling (simple demo: COCONUT10 = 10% off)
+    function calcDiscount(subtotal){
+      if(promoApplied === 'COCONUT10') return Math.round(subtotal * 0.10);
+      return 0;
+    }
+
+    function computeTotals(){
+      const items = cartEntries();
+      const subtotal = items.reduce((s, x) => s + x.line, 0);
+      const delivery = subtotal >= FREE_SHIP_MIN ? 0 : (items.length ? SHIP_FLAT : 0);
+      const discount = calcDiscount(subtotal);
+      const total = Math.max(0, subtotal + delivery - discount);
+      return { items, subtotal, delivery, discount, total };
+    }
+
+    function renderCheckoutSummary(){
+      const { items, subtotal, delivery, discount, total } = computeTotals();
+      summaryItems.innerHTML = items.map(i => `• ${i.name} x${i.qty} = ${fmt(i.line)}`).join('<br>') || '<span class="muted">Your cart is empty.</span>';
+      sumSubtotal.textContent = fmt(subtotal);
+      sumDelivery.textContent = delivery ? fmt(delivery) : 'FREE';
+      sumDiscount.textContent = discount ? `− ${fmt(discount)}` : '—';
+      sumTotal.textContent = fmt(total);
+      freeShipNote.textContent = subtotal >= FREE_SHIP_MIN
+        ? '✅ Free shipping applied (orders ≥ ฿500).'
+        : `Add ${fmt(FREE_SHIP_MIN - subtotal)} more for free shipping.`;
+    }
+
+    function openCheckout(){
+      const items = cartEntries();
+      if(items.length === 0){ alert('Your cart is empty!'); return; }
+
+      // Prefill and render summary
+      fillCheckoutFromStorage();
+      renderCheckoutSummary();
+
+      // Show drawer
+      checkoutModal.classList.add('open');
+      checkoutModal.setAttribute('aria-hidden', 'false');
+    }
+    function closeCheckoutModal(){
+      checkoutModal.classList.remove('open');
+      checkoutModal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Open checkout from cart
+    document.getElementById('checkout').addEventListener('click', () => {
+      closeDrawer(); // close cart
+      openCheckout(); // open checkout
+    });
+
+    // Close interactions
+    closeCheckoutBtn.addEventListener('click', closeCheckoutModal);
+    cancelCheckoutBtn.addEventListener('click', closeCheckoutModal);
+    checkoutOverlay.addEventListener('click', closeCheckoutModal);
+
+    // Apply promo
+    document.getElementById('applyPromo').addEventListener('click', () => {
+      const code = ($('#promo').value || '').trim().toUpperCase();
+      if(!code){ promoApplied = null; renderCheckoutSummary(); return; }
+      if(code === 'COCONUT10'){
+        promoApplied = code;
+        alert('Promo applied: 10% off subtotal.');
+      }else{
+        promoApplied = null;
+        alert('Invalid promo code.');
+      }
+      renderCheckoutSummary();
+    });
+
+    // Payment method toggles
+    function togglePaymentSections(){
+      const method = $('#paymentMethod').value;
+      bankBox.style.display = method === 'bank' ? 'block' : 'none';
+      cardBox.style.display = method === 'card' ? 'block' : 'none';
+    }
+    $('#paymentMethod').addEventListener('change', togglePaymentSections);
+
+    // Simple input helpers
+    $('#cardNumber').addEventListener('input', (e) => {
+      // format as 1234 5678 9012 3456
+      let v = e.target.value.replace(/\D/g,'').slice(0,16);
+      e.target.value = v.replace(/(\d{4})(?=\d)/g,'$1 ').trim();
+    });
+    $('#cardExp').addEventListener('input', (e) => {
+      let v = e.target.value.replace(/\D/g,'').slice(0,4);
+      if(v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+      e.target.value = v;
+    });
+    $('#cardCvc').addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g,'').slice(0,4);
+    });
+
+    // Validate basic fields
+    function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    function validPhone(v){ return /^[0-9\s+\-()]{8,}$/.test(v); }
+
+    // Confirm order
+    checkoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = $('#custName').value.trim();
+      const phone = $('#custPhone').value.trim();
+      const email = $('#custEmail').value.trim();
+      const address = $('#custAddress').value.trim();
+      const payment = $('#paymentMethod').value;
+
+      if(!name || !phone || !email || !address || !payment){
+        alert('Please fill in all required fields.');
+        return;
+      }
+      if(!validPhone(phone)){ alert('Please enter a valid phone number.'); return; }
+      if(!validEmail(email)){ alert('Please enter a valid email.'); return; }
+
+      if(payment === 'card'){
+        // Demo-only "validation"
+        const cn = ($('#cardNumber').value || '').replace(/\s+/g,'');
+        const exp = $('#cardExp').value || '';
+        const cvc = $('#cardCvc').value || '';
+        if(cn.length < 13 || !/^\d+$/.test(cn)) { alert('Please enter a valid card number. (Demo)'); return; }
+        if(!/^\d{2}\/\d{2}$/.test(exp)) { alert('Please enter expiry as MM/YY. (Demo)'); return; }
+        if(cvc.length < 3) { alert('Please enter a valid CVC. (Demo)'); return; }
+      }
+
+      // Save delivery details
+      saveCheckoutData({ name, phone, email, address, payment });
+
+      // Build summary
+      const { items, subtotal, delivery, discount, total } = computeTotals();
+      const lines = items.map(i => `• ${i.name} x${i.qty} = ${fmt(i.line)}`).join('\n');
+      const payText = payment === 'cod' ? 'Cash on Delivery'
+                    : payment === 'bank' ? 'Bank Transfer'
+                    : 'Card (Demo)';
+
+      alert(
+        `🎉 Thank you, ${name}!\n\n` +
+        `Order Summary:\n${lines}\n\n` +
+        `Subtotal: ${fmt(subtotal)}\n` +
+        `Delivery: ${delivery ? fmt(delivery) : 'FREE'}\n` +
+        `Discount: ${discount ? '− ' + fmt(discount) : '—'}\n` +
+        `Total: ${fmt(total)}\n\n` +
+        `Delivery Address:\n${address}\n\n` +
+        `Payment: ${payText}\n\n` +
+        (payment === 'bank' ? 'Please transfer to Kasikorn Bank 123-4-56789-0 and send the slip via LINE/Email.' : '')
+      );
+
+      // Clear cart and close
+      clearCart();
+      closeCheckoutModal();
+    });
+
+    // ======= Init =======
+    document.getElementById('checkout').addEventListener('click', renderCheckoutSummary);
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>

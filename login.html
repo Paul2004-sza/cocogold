@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoCoGold - Login</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("photos/home.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #2E4E34;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(250, 247, 240, 0.7);
+      z-index: -1;
+    }
+
+    .login-container {
+      background: rgba(255,255,255,0.9);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    .login-container h1 {
+      font-family: 'Playfair Display', serif;
+      color: #6B4226;
+      margin-bottom: 25px;
+    }
+
+    .login-container input[type="text"],
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      background-color: #3E7C50;
+      color: white;
+      font-size: 1em;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+
+    .login-container button:hover {
+      background-color: #A7E6D7;
+      color: #2E4E34;
+    }
+
+    .login-container a {
+      display: block;
+      margin-top: 15px;
+      color: #3E7C50;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .login-container a:hover {
+      color: #6B4226;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h1>Login</h1>
+    <form action="product.html" method="post">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <a href="register.html">Don't have an account? Register</a>
+    <a href="index.html">Back to Home</a>
+  </div>
+
+</body>
+</html>

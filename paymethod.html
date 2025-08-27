@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoCoGold - Payment Method</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url("photos/home.jpg") no-repeat center center fixed;
+      background-size: cover;
+      color: #2E4E34;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(250, 247, 240, 0.7);
+      z-index: -1;
+    }
+
+    header {
+      background: rgba(107, 66, 38, 0.85);
+      padding: 15px 40px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .logo img {
+      height: 60px;
+      margin-right: 12px;
+    }
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 600;
+      background: linear-gradient(90deg, #FFD700, #FFB700, #E6A400);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: rgba(255,255,255,0.9);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      color: #6B4226;
+      font-family: 'Playfair Display', serif;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .pay-btn {
+      padding: 15px;
+      background: #3E7C50;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: 0.3s;
+    }
+    .pay-btn:hover {
+      background: #A7E6D7;
+      color: #2E4E34;
+    }
+
+    .payment-options {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .payment-options button {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #3E7C50;
+      border-radius: 15px;
+      background: white;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .payment-options button:hover {
+      background: #3E7C50;
+      color: white;
+    }
+
+    .back-home {
+      display: inline-block;
+      background-color: #A7E6D7;
+      color: #2E4E34;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .back-home:hover {
+      background-color: #3E7C50;
+      color: white;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+      background: rgba(107, 66, 38, 0.85);
+      color: white;
+      border-top: 1px solid rgba(255,255,255,0.3);
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <img src="photos/cocohome.png" alt="CoCoGold Logo">
+      <span class="brand-name">CoCoGold</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Payment Method</h1>
+
+    <a href="index.html" class="back-home">Back to Home</a>
+
+    <!-- Payment Options -->
+    <div class="payment-options">
+      <button type="button" onclick="selectPayment('Credit Card')">Credit Card</button>
+      <button type="button" onclick="selectPayment('Paypal')">Paypal</button>
+      <button type="button" onclick="selectPayment('Bank Transfer')">Bank Transfer</button>
+    </div>
+
+    <!-- Payment Form -->
+    <form id="paymentForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Your Name" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+
+      <label for="method">Selected Method</label>
+      <input type="text" id="method" placeholder="Choose a method above" readonly required>
+
+      <label for="product">Product</label>
+      <select id="product" onchange="updateAmount()">
+        <option value="Hair Oil" data-price="250">Hair Oil - THB 250</option>
+        <option value="Coconut Milk" data-price="180">Coconut Milk - THB 180</option>
+        <option value="Coconut Water" data-price="120">Coconut Water - THB 120</option>
+        <option value="Coconut Soap" data-price="90">Coconut Soap - THB 90</option>
+      </select>
+
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" value="1" min="1" onchange="updateAmount()" required>
+
+      <label for="amount">Amount (THB)</label>
+      <input type="number" id="amount" value="250" readonly required>
+
+      <label for="address">Delivery Address</label>
+      <textarea id="address" placeholder="Enter your full address" rows="3" required></textarea>
+
+      <button type="submit" class="pay-btn">Pay Now</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 CoCoGold Coconut Products
+  </footer>
+
+  <script>
+    function selectPayment(method) {
+      document.getElementById('method').value = method;
+    }
+
+    function updateAmount() {
+      const productSelect = document.getElementById('product');
+      const selectedOption = productSelect.options[productSelect.selectedIndex];
+      const price = parseFloat(selectedOption.getAttribute('data-price'));
+      const quantity = parseInt(document.getElementById('quantity').value);
+      document.getElementById('amount').value = price * quantity;
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert("Thank you! Your payment of THB " + document.getElementById('amount').value +
+            " for " + document.getElementById('quantity').value + " " +
+            document.getElementById('product').value + "(s) via " +
+            document.getElementById('method').value +
+            " will be delivered to:\n" + document.getElementById('address').value);
+      window.location.href = "home.html";
+    });
+
+    // Initialize amount on page load
+    window.onload = updateAmount;
+  </script>
+
+</body>
+</html>
